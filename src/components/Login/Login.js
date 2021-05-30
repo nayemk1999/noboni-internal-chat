@@ -14,6 +14,8 @@ import Container from '@material-ui/core/Container';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { auth, provider } from '../../firebase';
 import { UserContext } from '../../App';
+import { useStateValue } from '../../Redux/StateProvider';
+import { actionTypes } from '../../Redux/Reducer';
 
 function Copyright() {
   return (
@@ -46,26 +48,24 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function LoginPage() {
-  const [loggedInUser, setLoggedInUser] = useContext(UserContext)
+  const [{ }, dispatch] = useStateValue();
   const history = useHistory()
   const location = useLocation()
   let { from } = location.state || { from: { pathname: "/" } };
   const classes = useStyles();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [invaild, setInvaild] = useState('');
   const handleSubmit = e => {
     e.preventDefault();
     auth.signInWithEmailAndPassword(email, password)
       .then((userCredential) => {
         var user = userCredential.user;
-        setLoggedInUser(user);
         history.replace(from)
       })
       .catch((error) => {
         var errorCode = error.code;
         var errorMessage = error.message;
-        if(errorMessage){
+        if (errorMessage) {
           alert('Incorrect Email Address, Please Try again!')
         }
       });
@@ -73,15 +73,18 @@ export default function LoginPage() {
   };
   const loginGoogle = () => {
     auth.signInWithPopup(provider)
-    .then((result) => {
-      const user = result.user;
-      setLoggedInUser(user);
-      history.replace(from)
-    }).catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(errorCode, errorMessage);
-    });
+      .then((result) => {
+        const user = result.user;
+        dispatch({
+          type: actionTypes.SET_USER,
+          user: user
+        });
+        history.replace(from)
+      }).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      });
   }
   return (
     <Container component="main" maxWidth="xs">
@@ -129,7 +132,7 @@ export default function LoginPage() {
           >
             Sign In
           </Button>
-          <Button 
+          <Button
             onClick={loginGoogle}
             type="submit"
             fullWidth

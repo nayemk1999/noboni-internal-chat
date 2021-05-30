@@ -10,11 +10,10 @@ import LoginPage from './components/Login/Login';
 import Content from './components/Home/Content';
 import Home from './components/Home/Home';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
-export const UserContext = createContext()
+import { useStateValue } from './Redux/StateProvider';
 function App() {
-  const [loggedInUser, setLoggedInUser] = useState({})
+  
   return (
-    <UserContext.Provider value={[loggedInUser, setLoggedInUser]}>
       <Router>
         <Switch>
           <Route exact path='/'>
@@ -28,11 +27,9 @@ function App() {
           </Route>
           <PrivateRoute path='/:id'>
             <Content></Content>
-          </PrivateRoute>
-          
+          </PrivateRoute> 
         </Switch>
       </Router>
-    </UserContext.Provider>
   );
 }
 

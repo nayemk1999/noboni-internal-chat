@@ -16,7 +16,7 @@ const SideBarChat = ({ addNewChat, name, id, address }) => {
     return !addNewChat ? (
         <Link to={`/${id}`}>
             <div className='sidebar-chat'>
-                <Avatar src='https://i2.wp.com/nayemkhan.com/wp-content/uploads/2020/11/My-picture0-ox8zgmumk0jnjuqoczmh1692r810mope5gpdregctw.jpg?fit=370%2C370&ssl=1'></Avatar>
+                <Avatar></Avatar>
                 <div className="chat-info">
                     <h6>{name}</h6>
                     <p>{address}</p>

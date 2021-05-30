@@ -7,9 +7,10 @@ import firebase from 'firebase'
 import { UserContext } from '../../../../App';
 import db from '../../../../firebase';
 import './Chat.css'
+import { useStateValue } from '../../../../Redux/StateProvider';
 const Chat = () => {
     const { id } = useParams();
-    const [loggedInUser, setLoggedInUser] = useContext(UserContext)
+    const [{ user }, dispatch] = useStateValue();
     const [input, setInput] = useState('')
     const [contacts, setContacts] = useState({})
     const [messages, setMessages] = useState([])
@@ -17,7 +18,7 @@ const Chat = () => {
         e.preventDefault();
         db.collection("contactList").doc(id).collection("message").add({
             message: input,
-            name: loggedInUser.displayName,
+            name: user.displayName,
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         })
         setInput('')
@@ -40,7 +41,7 @@ const Chat = () => {
     return (
         <div className='chat'>
             <div className="chat-header">
-                <Avatar src='https://i2.wp.com/nayemkhan.com/wp-content/uploads/2020/11/My-picture0-ox8zgmumk0jnjuqoczmh1692r810mope5gpdregctw.jpg?fit=370%2C370&ssl=1'></Avatar>
+                <Avatar ></Avatar>
                 <div className="chat-header-info">
                     <h6>{contacts.name}</h6>
                     <p>Last Seen.....</p>

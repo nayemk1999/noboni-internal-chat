@@ -4,12 +4,13 @@ import React, { useEffect, useState } from 'react';
 import { useContext } from 'react';
 import { UserContext } from '../../../App';
 import db from '../../../firebase';
+import { useStateValue } from '../../../Redux/StateProvider';
 import './SideBar.css'
 import SideBarChat from './SideBarChat';
 
 const SideBar = () => {
     const [contacts, setContacts] = useState([])
-    const [loggedInUser, setLoggedInUser] = useContext(UserContext)
+    const [{ user }, dispatch] = useStateValue();
     
     useEffect(() => {
         db.collection("contactList").onSnapshot((snapshot) =>
@@ -24,7 +25,7 @@ const SideBar = () => {
     return (
         <div className='sidebar'>
             <div className="sidebar-header">
-                <Avatar src={loggedInUser.photoURL }></Avatar>
+                <Avatar src={user.photoURL }></Avatar>
                 <div className="sidebar-headerRight">
                     <IconButton>
                         <DonutLarge></DonutLarge>
