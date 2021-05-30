@@ -26,9 +26,9 @@ function App() {
            <Route path='/login'>
             <LoginPage />
           </Route>
-          <Route path='/:id'>
+          <PrivateRoute path='/:id'>
             <Content></Content>
-          </Route>
+          </PrivateRoute>
           
         </Switch>
       </Router>

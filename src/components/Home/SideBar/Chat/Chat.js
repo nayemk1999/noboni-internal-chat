@@ -1,27 +1,42 @@
 import { Avatar, IconButton } from '@material-ui/core';
 import { AttachFile, InsertEmoticon, MicRounded, MoreVertOutlined, SearchOutlined } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { useParams } from 'react-router';
+import firebase from 'firebase'
+import { UserContext } from '../../../../App';
 import db from '../../../../firebase';
 import './Chat.css'
 const Chat = () => {
+    const { id } = useParams();
+    const [loggedInUser, setLoggedInUser] = useContext(UserContext)
     const [input, setInput] = useState('')
-    const [contacts, setContacts]= useState('')
-    const sendMessage= (e) => {
+    const [contacts, setContacts] = useState({})
+    const [messages, setMessages] = useState([])
+    const sendMessage = (e) => {
         e.preventDefault();
-        console.log('', input)
+        db.collection("contactList").doc(id).collection("message").add({
+            message: input,
+            name: loggedInUser.displayName,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        })
         setInput('')
     }
-    const {id} = useParams();
-    
     useEffect(() => {
-        if(id){
-            db.collection("contactList").doc(id).onSnapshot((snapshot) => 
-            setContacts(snapshot.data()))
+        if (id) {
+            db.collection("contactList").doc(id).onSnapshot((snapshot) =>
+                setContacts(snapshot.data()));
+
+            db.collection("contactList")
+                .doc(id)
+                .collection("message")
+                .orderBy("timestamp", "asc")
+                .onSnapshot((snapshot) =>
+                    setMessages(snapshot.docs.map((doc) =>
+                        doc.data())))
         }
-        
     }, [id])
-console.log(contacts);
+
     return (
         <div className='chat'>
             <div className="chat-header">
@@ -43,24 +58,31 @@ console.log(contacts);
                 </div>
             </div>
             <div className="chat-body">
-                <Avatar src='https://i2.wp.com/nayemkhan.com/wp-content/uploads/2020/11/My-picture0-ox8zgmumk0jnjuqoczmh1692r810mope5gpdregctw.jpg?fit=370%2C370&ssl=1'></Avatar>
-                <p className='chat-message'>
-                    <span className={`chat-name ${true && 'chat-receiver'}`}>Name</span>
-                    hi how are....
-                </p>
+                <div className="chat-container">
+                    {
+                        messages.map((message) => (
+
+                            <p className='chat-message'>
+                                <span className={`chat-name ${true && 'chat-receiver'}`}>{message.name}</span>
+                                {message.message}
+                            </p>
+                        ))
+                    }
+                </div>
+
             </div>
             <div className="chat-footer">
                 <IconButton>
-                <InsertEmoticon></InsertEmoticon>
+                    <InsertEmoticon></InsertEmoticon>
                 </IconButton>
                 <form action="">
-                    <input value={input} onChange={(e)=> setInput(e.target.value)} type="text" name="enter your message" id="" />
+                    <input value={input} onChange={(e) => setInput(e.target.value)} type="text" name="enter your message" id="" />
                     <button onClick={sendMessage} type="submit">Send</button>
                 </form>
                 <IconButton>
-                   <MicRounded></MicRounded> 
+                    <MicRounded></MicRounded>
                 </IconButton>
-                
+
             </div>
         </div>
     );

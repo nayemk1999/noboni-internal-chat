@@ -17,6 +17,7 @@
 
 .chat-body {
     display: flex;
+    justify-content: flex-end;
     flex: 1;
     background-image: url("https://lh3.googleusercontent.com/-Uwd8Cr-7C5g/WdIaWHqBnWI/AAAAAAAANmc/Mdv_tZIIRnIOR_zvAJJ0VuztB1Q9k50bwCHMYCw/s640/whatsapp.jpg");
     background-repeat: no-repeat;
@@ -29,7 +30,7 @@
     position: relative;
     font-size: 16px;
     padding: 10px;
-    margin-left: 5px;
+    margin-rig: 5px;
     background-color: #FFFFFF;
     width: fit-content;
     height: fit-content;
@@ -55,7 +56,6 @@
     justify-content: space-between;
     height: 60px;
     padding: 10px;
-    /* flex: 1; */
 }
 
 .chat-footer>form {
